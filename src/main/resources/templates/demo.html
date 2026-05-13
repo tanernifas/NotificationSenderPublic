@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отправка демо-письма</title>
+    <!-- CSRF токены для Spring Security (если используется) -->
+    <meta th:name="_csrf" th:content="${_csrf?.token}" />
+    <meta th:name="_csrf_header" th:content="${_csrf?.headerName}" />
+    <style>
+        :root {
+            --primary: #007bff;
+            --primary-hover: #0056b3;
+            --bg: #f4f7f6;
+            --card: #ffffff;
+            --text: #333333;
+            --border: #ced4da;
+            --success: #d4edda;
+            --success-text: #155724;
+            --error: #f8d7da;
+            --error-text: #721c24;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            color: var(--text);
+        }
+        .container {
+            background: var(--card);
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 520px;
+        }
+        h2 { margin-top: 0; font-size: 24px; text-align: center; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: 500; }
+        input[type="email"], input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .checkbox-group input { width: auto; transform: scale(1.2); }
+        button {
+            background: var(--primary);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        button:hover:not(:disabled) { background: var(--primary-hover); }
+        button:disabled { background: #a0a7b0; cursor: not-allowed; }
+        #statusMessage {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+            font-size: 14px;
+        }
+        .success { background: var(--success); color: var(--success-text); }
+        .error { background: var(--error); color: var(--error-text); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>📧 Отправка демо-сообщения</h2>
+    <form id="mailForm">
+        <div class="form-group">
+            <label for="to">Кому:</label>
+            <input type="email" id="to" name="to" placeholder="recipient@example.com" required>
+        </div>
+        <div class="form-group">
+            <label for="subject">Тема сообщения:</label>
+            <input type="text" id="subject" name="subject" placeholder="Тестовое письмо" required>
+        </div>
+        <div class="form-group">
+            <label for="message">Текст сообщения:</label>
+            <textarea id="message" name="message" rows="5" placeholder="Введите текст..." required></textarea>
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="isHtml" name="isHtml">
+            <label for="isHtml">Текст в виде HTML</label>
+        </div>
+        <button type="submit" id="submitBtn">Отправить</button>
+    </form>
+    <div id="statusMessage"></div>
+</div>
+
+<script>
+    document.getElementById('mailForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('statusMessage');
+
+        btn.disabled = true;
+        btn.textContent = 'Отправка...';
+        status.style.display = 'none';
+
+        const payload = {
+            to: document.getElementById('to').value,
+            subject: document.getElementById('subject').value,
+            message: document.getElementById('message').value,
+            isHtml: document.getElementById('isHtml').checked
+        };
+
+        // Поддержка CSRF (если включен Spring Security)
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content || 'X-CSRF-TOKEN';
+
+        try {
+            const response = await fetch('/api/demo/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(csrfToken ? { [csrfHeader]: csrfToken } : {})
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                status.textContent = '✅ Сообщение успешно отправлено!';
+                status.className = 'success';
+                this.reset();
+            } else {
+                const errText = await response.text();
+                status.textContent = `❌ Ошибка ${response.status}: ${errText}`;
+                status.className = 'error';
+            }
+        } catch (error) {
+            status.textContent = `❌ Ошибка сети: ${error.message}`;
+            status.className = 'error';
+        } finally {
+            status.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Отправить';
+        }
+    });
+</script>
+</body>
+</html>
