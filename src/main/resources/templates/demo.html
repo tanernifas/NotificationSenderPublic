@@ -103,8 +103,8 @@
             <textarea id="message" name="message" rows="5" placeholder="Введите текст..." required></textarea>
         </div>
         <div class="checkbox-group">
-            <input type="checkbox" id="isHtml" name="isHtml">
-            <label for="isHtml">Текст в виде HTML</label>
+            <input type="checkbox" id="html" name="html">
+            <label for="html">Текст в виде HTML</label>
         </div>
         <button type="submit" id="submitBtn">Отправить</button>
     </form>
@@ -125,7 +125,7 @@
             to: document.getElementById('to').value,
             subject: document.getElementById('subject').value,
             message: document.getElementById('message').value,
-            isHtml: document.getElementById('isHtml').checked
+            html: document.getElementById('html').checked
         };
 
         // Поддержка CSRF (если включен Spring Security)

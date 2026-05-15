@@ -11,5 +11,5 @@ public class MailMessageDto implements MessageDto {
     private String to;
     private String message;
     private String subject;
-    private boolean isHtml;
+    private boolean html;
 }
