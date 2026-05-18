@@ -1,7 +1,7 @@
 # Модуль уведомлений (демонстрационная версия)
 
 > Модуль используется для получения данных о регистрации и верификации сервиса
-> InviteMe (https://github.com/tanernifas/InviteMePublic)
+> [InviteMe](https://github.com/tanernifas/InviteMePublic)
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
