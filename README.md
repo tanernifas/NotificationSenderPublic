@@ -80,7 +80,7 @@ cd NotificationSenderPublic
 (При желании можно пересобрать проект)
 mvn clean package
 
-# 2. Запустите через Docker Compose
+# 2. Запустите через Docker Compose (Docker должен быть запущен)
 docker compose up --build -d
 ```
 
@@ -96,7 +96,7 @@ cd NotificationSenderPublic
 (При желании можно пересобрать проект)
 mvn clean package
 
-4. Запустите через Docker Compose
+4. Запустите через Docker Compose (Docker должен быть запущен)
 docker compose up --build -d
 ```
 
@@ -110,7 +110,7 @@ cd NotificationSenderPublic
 (При желании можно пересобрать проект)
 mvn clean package
 
-# 2. Запустите через Docker Compose
+# 2. Запустите через Docker Compose (Docker должен быть запущен)
 docker compose up --build -d
 ```
 
